@@ -14,7 +14,9 @@ class gui(QtGui.QMainWindow):
         self.entry1 = 0
         self.entry2 = 0
         self.currency2 = ""
-        self.conversionrate = 1  #gbp conversion rate
+        self.url = urlopen("http://api.fixer.io/latest?base=GBP").read()
+        self.result = json.loads(self.url)
+        self.conversionrate = 0  #gbp conversion rate
         self.converted = 0  #the conversion output
         self.url = "http://api.fixer.io/latest?symbols=GBP,USD"  #the url used by json
 
@@ -23,9 +25,11 @@ class gui(QtGui.QMainWindow):
     def onActivated(self, text):  #selects conversion rate depending on currency combobox
         currency = text
         if currency == 'USD':
-            url = urlopen("http://api.fixer.io/latest?symbols=GBP,USD").read()
-            result = json.loads(url)
-            self.conversionrate = float(result['rates']['USD'])
+            self.conversionrate = float(self.result['rates']['USD'])
+        if currency == 'EUR':
+            self.conversionrate = float(self.result['rates']['EUR'])
+        if currency == 'JPY':
+            self.conversionrate = float(self.result['rates']['JPY'])
 
     def convert(self):  #converts from gbp to selected currency
         amount = int(self.entry1.text())
@@ -53,6 +57,8 @@ class gui(QtGui.QMainWindow):
         self.currency2 = QtGui.QComboBox(self)  #allows for selection of currency to convert to
         self.currency2.addItem("")
         self.currency2.addItem("USD")
+        self.currency2.addItem("EUR")
+        self.currency2.addItem("JPY")
         self.currency2.setGeometry(300, 300, 50, 25)
         self.currency2.move(20, 80)
         self.currency2.activated[str].connect(self.onActivated)
