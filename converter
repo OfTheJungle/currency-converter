@@ -1,8 +1,9 @@
 #Currency Converter
 #George Foulds
 
-from PyQt4 import QtCore, QtGui
-import sys
+from PyQt4 import QtGui
+import sys, json
+from urllib import urlopen
 
 
 class gui(QtGui.QMainWindow):
@@ -12,16 +13,19 @@ class gui(QtGui.QMainWindow):
 
         self.entry1 = 0
         self.entry2 = 0
-        self.currency2 = "USD"
-        self.conversionrate = 1.5  #gbp conversion rate
+        self.currency2 = ""
+        self.conversionrate = 1  #gbp conversion rate
         self.converted = 0  #the conversion output
+        self.url = "http://api.fixer.io/latest?symbols=GBP,USD"  #the url used by json
 
         self.initUI()
 
     def onActivated(self, text):  #selects conversion rate depending on currency combobox
         currency = text
-        if currency == 'USD'():
-            self.conversionrate = 1.5
+        if currency == 'USD':
+            url = urlopen("http://api.fixer.io/latest?symbols=GBP,USD").read()
+            result = json.loads(url)
+            self.conversionrate = float(result['rates']['USD'])
 
     def convert(self):  #converts from gbp to selected currency
         amount = int(self.entry1.text())
@@ -47,6 +51,7 @@ class gui(QtGui.QMainWindow):
         l2.setText('to')
 
         self.currency2 = QtGui.QComboBox(self)  #allows for selection of currency to convert to
+        self.currency2.addItem("")
         self.currency2.addItem("USD")
         self.currency2.setGeometry(300, 300, 50, 25)
         self.currency2.move(20, 80)
