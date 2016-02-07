@@ -1,28 +1,30 @@
-#Currency Converter
-#George Foulds
+# Currency Converter
+# George Foulds
 
 from PyQt4 import QtGui
-import sys, json
+import sys
+import json
 from urllib import urlopen
 
 
-class gui(QtGui.QMainWindow):
+class Gui(QtGui.QMainWindow):
 
     def __init__(self):
-        super(gui, self).__init__()
+        super(Gui, self).__init__()
 
         self.entry1 = 0
         self.entry2 = 0
-        self.currency2 = ""
-        self.url = urlopen("http://api.fixer.io/latest?base=GBP").read()
+        self.currency2 = ''
+        self.url = urlopen('http://api.fixer.io/latest?base=GBP').read()
         self.result = json.loads(self.url)
-        self.conversionrate = 0  #gbp conversion rate
-        self.converted = 0  #the conversion output
-        self.url = "http://api.fixer.io/latest?symbols=GBP,USD"  #the url used by json
+        self.conversionrate = 0
+        self.converted = 0
+        self.url = 'http://api.fixer.io/latest?symbols=GBP,USD'
 
-        self.initUI()
+        self.initui()
 
-    def onActivated(self, text):  #selects conversion rate depending on currency combobox
+# Selects conversion rate depending on currency combobox
+    def onactivated(self, text):
         currency = text
         if currency == 'USD':
             self.conversionrate = float(self.result['rates']['USD'])
@@ -31,12 +33,14 @@ class gui(QtGui.QMainWindow):
         if currency == 'JPY':
             self.conversionrate = float(self.result['rates']['JPY'])
 
-    def convert(self):  #converts from gbp to selected currency
+# Converts from gbp to selected currency
+    def convert(self):
         amount = int(self.entry1.text())
         self.converted = amount * self.conversionrate
-        self.entry2.setText(str(self.converted))  #updates output display
+        self.entry2.setText(str(self.converted))  # Updates output display
 
-    def initUI(self):  #creates gui
+# Creates gui
+    def initui(self):
 
         self.setGeometry(300, 300, 140, 150)
         self.setWindowTitle('Currency Converter')
@@ -54,25 +58,25 @@ class gui(QtGui.QMainWindow):
         l2.move(37, 53)
         l2.setText('to')
 
-        self.currency2 = QtGui.QComboBox(self)  #allows for selection of currency to convert to
-        self.currency2.addItem("")
-        self.currency2.addItem("USD")
-        self.currency2.addItem("EUR")
-        self.currency2.addItem("JPY")
+        self.currency2 = QtGui.QComboBox(self)
+        self.currency2.addItem('')  # Default
+        self.currency2.addItem('USD')
+        self.currency2.addItem('EUR')
+        self.currency2.addItem('JPY')
         self.currency2.setGeometry(300, 300, 50, 25)
         self.currency2.move(20, 80)
-        self.currency2.activated[str].connect(self.onActivated)
+        self.currency2.activated[str].connect(self.onactivated)
 
-        self.entry1 = QtGui.QLineEdit(self)  #allows for entry of value the user wants to convert
+        self.entry1 = QtGui.QLineEdit(self)
         self.entry1.setGeometry(300, 300, 50, 25)
         self.entry1.move(75, 31)
 
-        self.entry2 = QtGui.QLineEdit(self)  #displays the converted output
+        self.entry2 = QtGui.QLineEdit(self)
         self.entry2.setGeometry(300, 300, 50, 25)
         self.entry2.move(75, 81)
         self.entry2.setText(str(self.converted))
 
-        butt1 = QtGui.QPushButton('Go!', self)  #initialises conversion when clicked
+        butt1 = QtGui.QPushButton('Go!', self)
         butt1.setGeometry(300, 300, 105, 25)
         butt1.move(20, 110)
         butt1.clicked.connect(self.convert)
@@ -83,7 +87,7 @@ class gui(QtGui.QMainWindow):
 def main():
 
     app = QtGui.QApplication(sys.argv)
-    ex = gui()
+    ex = Gui()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
